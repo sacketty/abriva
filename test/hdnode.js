@@ -122,16 +122,6 @@ describe('HDNode', function() {
         done();
       })
     })
-
-    // FIXME: remove in 2.x.y
-    it('fails when there is no private key', function(done) {
-      var hd = HDNode.fromBase58(fixtures.valid[0].master.base58)
-
-      assert.throws(function() {
-        hd.toBase58(true)
-      }, /Missing private key/);
-      done();
-    })
   })
 
   describe('fromBase58', function() {
@@ -211,15 +201,6 @@ describe('HDNode', function() {
       })
     })
 
-    // FIXME: remove in 2.x.y
-    it('fails when there is no private key', function(done) {
-      var hd = HDNode.fromHex(fixtures.valid[0].master.hex)
-
-      assert.throws(function() {
-        hd.toHex(true)
-      }, /Missing private key/)
-      done();
-    })
   })
 
   describe('getIdentifier', function() {
