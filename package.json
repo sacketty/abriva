@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "lab": "3.x.x",
-    "sinon": "1.9.0"
+    "sinon": "1.10.x"
   },
   "scripts": {
     "test": "make test-cov"

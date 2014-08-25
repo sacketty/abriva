@@ -35,8 +35,9 @@ describe('ecdsa', function() {
       })
     })
 
-    it('loops until an appropriate k value is found', sinon.test(function(done) {
-      this.mock(BigInteger).expects('fromBuffer')
+    it('loops until an appropriate k value is found', function(done) {
+      var mock = sinon.mock(BigInteger)
+      mock.expects('fromBuffer')
         .exactly(3)
         .onCall(0).returns(new BigInteger('0'))
         .onCall(1).returns(curve.n)
@@ -48,8 +49,9 @@ describe('ecdsa', function() {
       var k = ecdsa.deterministicGenerateK(curve, h1, d)
 
       assert.equal(k.toString(), '42')
+      mock.restore();
       done()
-    }))
+    })
   })
 
   describe('recoverPubKey', function() {
