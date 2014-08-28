@@ -1,14 +1,16 @@
-var assert = require('assert')
-var networks = require('../lib/networks')
+// Load modules
 
-var Address = require('../lib/address')
-var BigInteger = require('bigi')
-var ECKey = require('../lib/eccrypto/eckey')
-var Message = require('../lib/message')
-
-var fixtures = require('./fixtures/message.json')
-
+var Url = require('url');
 var Lab = require('lab');
+var Hoek = require('hoek');
+var Abriva = require('../lib');
+
+
+// Declare internals
+
+var internals = {};
+
+
 // Test shortcuts
 
 var expect = Lab.expect;
@@ -17,68 +19,243 @@ var after = Lab.after;
 var describe = Lab.experiment;
 var it = Lab.test;
 
-describe('Message', function() {
-  describe('magicHash', function() {
-    fixtures.valid.magicHash.forEach(function(f) {
-      it('produces the correct magicHash for \"' + f.message + '\" (' + f.network + ')', function(done) {
-        var network = networks[f.network]
-        var actual = Message.magicHash(f.message, network)
 
-        assert.equal(actual.toString('hex'), f.magicHash)
-        done()
-      })
-    })
-  })
+describe('Abriva', function () {
 
-  describe('verify', function() {
-    it('accepts an Address object', function(done) {
-      var f = fixtures.valid.verify[0]
-      var network = networks[f.network]
+    var credentialsFunc = function (id, callback) {
 
-      var address = Address.fromBase58Check(f.address)
-      assert(Message.verify(address, f.signature, f.message, network))
-      done()
-    })
+        var credentials = {
+            adr: id,
+            key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
+            algorithm: (id === '1' ? 'sha1' : 'sha256'),
+            user: 'steve'
+        };
 
-    fixtures.valid.verify.forEach(function(f) {
-      it('verifies a valid signature for \"' + f.message + '\" (' + f.network + ')', function(done) {
-        var network = networks[f.network]
+        return callback(null, credentials);
+    };
 
-        var signature = f.signature
-        assert(Message.verify(f.address, f.signature, f.message, network))
+    it('should generate an authorization then successfully parse it', function (done) {
 
-        if (f.compressed) {
-          assert(Message.verify(f.compressed.address, f.compressed.signature, f.message, network))
-        }
-        done()
-      })
-    })
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-    fixtures.invalid.verify.forEach(function(f) {
-      it(f.description, function(done) {
-        assert(!Message.verify(f.address, f.signature, f.message))
-        done()
-      })
-    })
-  })
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
 
-  describe('signing', function() {
-    fixtures.valid.signing.forEach(function(f) {
-      it(f.description, function(done) {
-        var network = networks[f.network]
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
 
-        var privKey = new ECKey(new BigInteger(f.d), false)
-        var signature = Message.sign(privKey, f.message, network)
-        assert.equal(signature.toString('base64'), f.signature)
+                expect(err).to.not.exist;
+                expect(credentials.user).to.equal('steve');
+                done();
+            });
+        });
+    });
 
-        if (f.compressed) {
-          var compressedPrivKey = new ECKey(new BigInteger(f.d))
-          var compressedSignature = Message.sign(compressedPrivKey, f.message)
+    it('should fail authorization on mismatching host', function (done) {
 
-          assert.equal(compressedSignature.toString('base64'), f.compressed.signature)
-        }
-        done()
-      })
-    })
-  })
-})
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            Abriva.server.authenticateMessage('example1.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Bad mac');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on stale timestamp', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, { localtimeOffsetMsec: 100000 }, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Stale timestamp');
+                done();
+            });
+        });
+    });
+
+    it('overrides timestampSkewSec', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials, localtimeOffsetMsec: 100000 });
+            expect(auth).to.exist;
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, { timestampSkewSec: 500 }, function (err, credentials) {
+
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on invalid authorization', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+            delete auth.id;
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Invalid authorization');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on bad hash', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message1', auth, credentialsFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Bad message hash');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on nonce error', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, { nonceFunc: function (nonce, ts, callback) { callback (new Error('kaboom')); } }, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Invalid nonce');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on credentials error', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            var errFunc = function (id, callback) {
+
+                callback(new Error('kablooey'));
+            };
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, errFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('kablooey');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on missing credentials', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            var errFunc = function (id, callback) {
+
+                callback();
+            };
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, errFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Unknown credentials');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on invalid credentials', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            var errFunc = function (id, callback) {
+
+                callback(null, {});
+            };
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, errFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Invalid credentials');
+                done();
+            });
+        });
+    });
+
+    it('should fail authorization on invalid credentials algorithm', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
+            expect(auth).to.exist;
+
+            var errFunc = function (id, callback) {
+
+                callback(null, { key: '123', algorithm: '456' });
+            };
+
+            Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, errFunc, {}, function (err, credentials) {
+
+                expect(err).to.exist;
+                expect(err.message).to.equal('Unknown algorithm');
+                done();
+            });
+        });
+    });
+
+    it('should fail on missing host', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var auth = Abriva.client.message(null, 8080, 'some message', { credentials: credentials });
+            expect(auth).to.not.exist;
+            done();
+        });
+    });
+
+    it('should fail on missing credentials', function (done) {
+
+        var auth = Abriva.client.message('example.com', 8080, 'some message', {});
+        expect(auth).to.not.exist;
+        done();
+    });
+
+    it('should fail on invalid algorithm', function (done) {
+
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
+
+            var creds = Hoek.clone(credentials);
+            creds.algorithm = 'blah';
+            var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: creds });
+            expect(auth).to.not.exist;
+            done();
+        });
+    });
+});

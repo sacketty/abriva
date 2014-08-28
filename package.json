@@ -25,7 +25,8 @@
     "cryptiles": "2.x.x",
     "sntp": "1.x.x",
     "crypto-js": "3.1.2-3",
-    "ecurve": "1.0.0"
+    "ecurve": "1.0.0",
+    "bitcoinjs-lib": "1.x.x"
   },
   "devDependencies": {
     "lab": "3.x.x",
