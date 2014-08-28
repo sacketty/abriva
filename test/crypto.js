@@ -37,7 +37,7 @@ describe('Hawk', function () {
                     resource: '/resource/something',
                     host: 'example.com',
                     port: 8080
-                })).to.equal('hawk.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\n\n\n');
+                })).to.equal('abriva.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\n\n\n');
 
                 done();
             });
@@ -56,7 +56,7 @@ describe('Hawk', function () {
                     host: 'example.com',
                     port: 8080,
                     ext: 'this is some app data'
-                })).to.equal('hawk.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\n\nthis is some app data\n');
+                })).to.equal('abriva.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\n\nthis is some app data\n');
 
                 done();
             });
@@ -76,7 +76,7 @@ describe('Hawk', function () {
                     port: 8080,
                     hash: 'U4MKKSmiVxk37JCCrAVIjV/OhB3y+NdwoCr6RShbVkE=',
                     ext: 'this is some app data'
-                })).to.equal('hawk.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\nU4MKKSmiVxk37JCCrAVIjV/OhB3y+NdwoCr6RShbVkE=\nthis is some app data\n');
+                })).to.equal('abriva.1.header\n1357747017\nk3k4j5\nGET\n/resource/something\nexample.com\n8080\nU4MKKSmiVxk37JCCrAVIjV/OhB3y+NdwoCr6RShbVkE=\nthis is some app data\n');
 
                 done();
             });

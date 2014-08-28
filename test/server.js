@@ -2,7 +2,12 @@
 
 var Url = require('url');
 var Lab = require('lab');
-var Hawk = require('../lib');
+var Abriva = require('../lib');
+
+
+//TODO REmove
+var util = require('util')
+
 
 
 // Declare internals
@@ -19,16 +24,16 @@ var describe = Lab.experiment;
 var it = Lab.test;
 
 
-describe('Hawk', function () {
+describe('Abriva', function () {
 
     describe('server', function () {
 
         var credentialsFunc = function (id, callback) {
 
             var credentials = {
-                id: id,
+                adr: id,
                 key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
-                algorithm: (id === '1' ? 'sha1' : 'sha256'),
+                algorithm:  'sha256',
                 user: 'steve'
             };
 
@@ -44,10 +49,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="1", ts="1353788437", nonce="k3j4h2", mac="zy79QQ5/EYFmQqutVnYb73gAc/U=", ext="hello"'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353788437", nonce="k3j4h2", mac="HzGmN8kYgcfVegTpMvdgmlgmjNVOHjemS6zy1H8W2c3TRiaB+LV7htPeajemw079WU5gAWZTBD9KMNSCMe42evo=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -62,10 +67,10 @@ describe('Hawk', function () {
                     url: '/resource/1?b=1&a=2',
                     host: 'example.com',
                     port: 8000,
-                    authorization: 'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", mac="m8r1rHbXN6NgO+KIIhjO7sFRyd78RNGVUwehe8Cp2dU=", ext="some-app-data"'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353832234", nonce="j4h3g2", mac="IO1dSuDJ6i9XONAIXb/aPdUB56YUnIAI5iCQRyGWd+yxVsj9WU2CXo9whaatRdsiEDHe8YI/3I1VFvHhWTV2FSo=", ext="some-app-data"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353832234000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353832234000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -80,11 +85,11 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     headers: {
                         host: 'example1.com:8080',
-                        authorization: 'Hawk id="1", ts="1353788437", nonce="k3j4h2", mac="zy79QQ5/EYFmQqutVnYb73gAc/U=", ext="hello"'
+                        authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353788437", nonce="k3j4h2", mac="HzGmN8kYgcfVegTpMvdgmlgmjNVOHjemS6zy1H8W2c3TRiaB+LV7htPeajemw079WU5gAWZTBD9KMNSCMe42evo=", ext="hello"'
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { host: 'example.com', localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { host: 'example.com', localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -99,11 +104,11 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     headers: {
                         host: 'example1.com:80',
-                        authorization: 'Hawk id="1", ts="1353788437", nonce="k3j4h2", mac="zy79QQ5/EYFmQqutVnYb73gAc/U=", ext="hello"'
+                        authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353788437", nonce="k3j4h2", mac="HzGmN8kYgcfVegTpMvdgmlgmjNVOHjemS6zy1H8W2c3TRiaB+LV7htPeajemw079WU5gAWZTBD9KMNSCMe42evo=", ext="hello"'
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { host: 'example.com', port: 8080, localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { host: 'example.com', port: 8080, localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -118,10 +123,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123456", ts="1357926341", nonce="1AwuJD", hash="qAiXIVv+yjDATneWxZP2YCTa9aHRgQdnH9b3Wc+o3dg=", ext="some-app-data", mac="UeYcj5UoTVaAWXNvJfLVia7kU3VabxCqrccXP8sUGC4="'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1357926341", nonce="1AwuJD", hash="qAiXIVv+yjDATneWxZP2YCTa9aHRgQdnH9b3Wc+o3dg=", ext="some-app-data", mac="H6u/OVQsrGin4AOdxo3eVW09WL/dMfIIxGrcK2OC+XmfD0qmh9+pLe92j1SgDehsE9q9xSXaFsWW93GDyrHlolk="'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1357926341000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1357926341000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -136,10 +141,10 @@ describe('Hawk', function () {
                     url: '/resource/1?b=1&a=2',
                     host: 'example.com',
                     port: 8000,
-                    authorization: 'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", mac="m8r1rHbXN6NgO+KIIhjO7sFRyd78RNGVUwehe8Cp2dU=", ext="some-app-data"'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353832234", nonce="j4h3g2", mac="IO1dSuDJ6i9XONAIXb/aPdUB56YUnIAI5iCQRyGWd+yxVsj9WU2CXo9whaatRdsiEDHe8YI/3I1VFvHhWTV2FSo=", ext="some-app-data"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { payload: 'body', localtimeOffsetMsec: 1353832234000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { payload: 'body', localtimeOffsetMsec: 1353832234000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Missing required payload hash');
@@ -154,16 +159,16 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123456", ts="1362337299", nonce="UzmxSs", ext="some-app-data", mac="wnNUxchvvryMH2RxckTdZ/gY3ijzvccx4keVvELC61w="'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1362337299", nonce="UzmxSs", ext="some-app-data", mac="H2d65iNl/mWZ1y2M2+WD0f2N7nOJTewbb3/vyxYekFIbYLLsDQlmCBh7hFUGX/wo7OZn+A+1eP0R5s+jx6aXuU8="'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Stale timestamp');
                     var header = err.output.headers['WWW-Authenticate'];
-                    var ts = header.match(/^Hawk ts\=\"(\d+)\"\, tsm\=\"([^\"]+)\"\, error=\"Stale timestamp\"$/);
-                    var now = Hawk.utils.now();
+                    var ts = header.match(/^Abriva ts\=\"(\d+)\"\, tsm\=\"([^\"]+)\"\, error=\"Stale timestamp\"$/);
+                    var now = Abriva.utils.now();
                     expect(parseInt(ts[1], 10) * 1000).to.be.within(now - 1000, now + 1000);
 
                     var res = {
@@ -172,7 +177,7 @@ describe('Hawk', function () {
                         }
                     };
 
-                    expect(Hawk.client.authenticate(res, credentials, artifacts)).to.equal(true);
+                    expect(Abriva.client.authenticate(res, credentials, artifacts)).to.equal(true);
                     done();
                 });
             });
@@ -184,12 +189,12 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="bXx7a7p1h9QYQNZ8x7QhvDQym8ACgab4m3lVSFn4DBw=", ext="hello"'
+                    authorization: 'Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353788437", nonce="k3j4h2", mac="HzGmN8kYgcfVegTpMvdgmlgmjNVOHjemS6zy1H8W2c3TRiaB+LV7htPeajemw079WU5gAWZTBD9KMNSCMe42evo=", ext="hello"'
                 };
 
                 var memoryCache = {};
                 var options = {
-                    localtimeOffsetMsec: 1353788437000 - Hawk.utils.now(),
+                    localtimeOffsetMsec: 1353788437000 - Abriva.utils.now(),
                     nonceFunc: function (nonce, ts, callback) {
 
                         if (memoryCache[nonce]) {
@@ -201,12 +206,12 @@ describe('Hawk', function () {
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, options, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, options, function (err, credentials, artifacts) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
 
-                    Hawk.server.authenticate(req, credentialsFunc, options, function (err, credentials, artifacts) {
+                    Abriva.server.authenticate(req, credentialsFunc, options, function (err, credentials, artifacts) {
 
                         expect(err).to.exist;
                         expect(err.output.payload.message).to.equal('Invalid nonce');
@@ -225,7 +230,7 @@ describe('Hawk', function () {
                     authorization: 'Basic asdasdasdasd'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.not.exist;
@@ -243,7 +248,7 @@ describe('Hawk', function () {
                     authorization: '!@#'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid header syntax');
@@ -260,7 +265,7 @@ describe('Hawk', function () {
                     port: 8080
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.isMissing).to.equal(true);
@@ -274,11 +279,11 @@ describe('Hawk', function () {
                     method: 'GET',
                     url: '/resource/4?filter=a',
                     headers: {
-                        authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                        authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid Host header');
@@ -293,10 +298,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Missing attributes');
@@ -311,10 +316,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Missing attributes');
@@ -329,10 +334,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Missing attributes');
@@ -347,10 +352,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Missing attributes');
@@ -365,10 +370,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", x="3", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", x="3", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Unknown attribute: x');
@@ -383,10 +388,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123\\", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123\\", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Bad header format');
@@ -401,13 +406,13 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="\t", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="\t", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
-                    expect(err.output.payload.message).to.equal('Bad attribute value: id');
+                    expect(err.output.payload.message).to.equal('Bad attribute value: adr');
                     done();
                 });
             });
@@ -419,13 +424,13 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
-                    expect(err.output.payload.message).to.equal('Bad attribute value: id');
+                    expect(err.output.payload.message).to.equal('Bad attribute value: adr');
                     done();
                 });
             });
@@ -437,13 +442,13 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", id="456", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", adr="456", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
-                    expect(err.output.payload.message).to.equal('Duplicate attribute: id');
+                    expect(err.output.payload.message).to.equal('Duplicate attribute: adr');
                     done();
                 });
             });
@@ -455,10 +460,10 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk'
+                    authorization: 'Abriva'
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid header syntax');
@@ -473,11 +478,11 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     headers: {
                         host: ':8080',
-                        authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                        authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid Host header');
@@ -492,11 +497,11 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     headers: {
                         host: 'example.com:something',
-                        authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                        authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                     }
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid Host header');
@@ -511,7 +516,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -519,7 +524,7 @@ describe('Hawk', function () {
                     return callback(new Error('Unknown user'));
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.message).to.equal('Unknown user');
@@ -534,7 +539,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -542,7 +547,7 @@ describe('Hawk', function () {
                     return callback(new Error('Unknown user'), { some: 'value' });
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.message).to.equal('Unknown user');
@@ -558,7 +563,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -566,7 +571,7 @@ describe('Hawk', function () {
                     return callback(null, null);
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Unknown credentials');
@@ -581,7 +586,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -594,7 +599,7 @@ describe('Hawk', function () {
                     return callback(null, credentials);
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.message).to.equal('Invalid credentials');
@@ -610,20 +615,20 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
 
                     var credentials = {
-                        id: '23434d3q4d5345d',
+                        address: '23434d3q4d5345d',
                         user: 'steve'
                     };
 
                     return callback(null, credentials);
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.message).to.equal('Invalid credentials');
@@ -639,7 +644,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcUyW6EEgUH4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -653,7 +658,7 @@ describe('Hawk', function () {
                     return callback(null, credentials);
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.message).to.equal('Unknown algorithm');
@@ -669,7 +674,7 @@ describe('Hawk', function () {
                     url: '/resource/4?filter=a',
                     host: 'example.com',
                     port: 8080,
-                    authorization: 'Hawk id="123", ts="1353788437", nonce="k3j4h2", mac="/qwS4UjfVWMcU4jlr7T/wuKe3dKijvTvSos=", ext="hello"'
+                    authorization: 'Abriva adr="123", ts="1353788437", nonce="k3j4h2", mac="HzGmN8kYgcfVegTpMvdgmlgmjNVOHjemS6zy1H8W2c3TRiaB+LV7htPeajemw079WU5gAWZTBD9KMNSCMe42evo=", ext="hello"'
                 };
 
                 var credentialsFunc = function (id, callback) {
@@ -683,7 +688,7 @@ describe('Hawk', function () {
                     return callback(null, credentials);
                 };
 
-                Hawk.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Hawk.utils.now() }, function (err, credentials, artifacts) {
+                Abriva.server.authenticate(req, credentialsFunc, { localtimeOffsetMsec: 1353788437000 - Abriva.utils.now() }, function (err, credentials, artifacts) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Bad mac');
@@ -697,7 +702,7 @@ describe('Hawk', function () {
             it('generates header', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
@@ -713,18 +718,18 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
-                expect(header).to.equal('Hawk mac=\"n14wVJK4cOxAytPUMc5bPezQzuJGl5n7MYXhFQgEKsE=\", hash=\"f9cDF/TDm7TkYRLnGwRMfeDzT6LixQVLvrIKhh0vgmM=\", ext=\"response-specific\"');
+                var header = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                expect(header).to.equal('Abriva mac=\"IIdfUOXSV8vVz5no5u+p1ruan1mIiOB61HqNAdIPHnD3JiJKdRvnv24YebFqraSBuBnlH9nKx3twtKUW+sVsZgk=\", hash=\"Bn8OiCB6zOHTKGtRrZY47DgOxWfvXqqrW8fomUhPnKs=\", ext=\"response-specific\"');
                 done();
             });
 
             it('generates header (empty payload)', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
@@ -740,18 +745,18 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(credentials, artifacts, { payload: '', contentType: 'text/plain', ext: 'response-specific' });
-                expect(header).to.equal('Hawk mac=\"i8/kUBDx0QF+PpCtW860kkV/fa9dbwEoe/FpGUXowf0=\", hash=\"q/t+NNAkQZNlq/aAD6PlexImwQTxwgT2MahfTa9XRLA=\", ext=\"response-specific\"');
+                var header = Abriva.server.header(credentials, artifacts, { payload: '', contentType: 'text/plain', ext: 'response-specific' });
+                expect(header).to.equal('Abriva mac=\"H2izJqgjMQcmBG8/mbKJ41CuXe14ewo0zyhjV3prNVqPf7JMLC5onHGjH1ZJ7TW6olHqLjKGo9R+bZrRKHuQKk0=\", hash=\"YPCMpoNSclS8I+imNQJ1Fggfm2LPjpjnV1IA7NHSsVg=\", ext=\"response-specific\"');
                 done();
             });
 
             it('generates header (pre calculated hash)', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
@@ -767,20 +772,20 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
                 var options = { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' };
-                options.hash = Hawk.crypto.calculatePayloadHash(options.payload, credentials.algorithm, options.contentType);
-                var header = Hawk.server.header(credentials, artifacts, options);
-                expect(header).to.equal('Hawk mac=\"n14wVJK4cOxAytPUMc5bPezQzuJGl5n7MYXhFQgEKsE=\", hash=\"f9cDF/TDm7TkYRLnGwRMfeDzT6LixQVLvrIKhh0vgmM=\", ext=\"response-specific\"');
+                options.hash = Abriva.crypto.calculatePayloadHash(options.payload, credentials.algorithm, options.contentType);
+                var header = Abriva.server.header(credentials, artifacts, options);
+                expect(header).to.equal('Abriva mac=\"IIdfUOXSV8vVz5no5u+p1ruan1mIiOB61HqNAdIPHnD3JiJKdRvnv24YebFqraSBuBnlH9nKx3twtKUW+sVsZgk=\", hash=\"Bn8OiCB6zOHTKGtRrZY47DgOxWfvXqqrW8fomUhPnKs=\", ext=\"response-specific\"');
                 done();
             });
 
             it('generates header (null ext)', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
@@ -795,24 +800,24 @@ describe('Hawk', function () {
                     nonce: 'xUwusx',
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: null });
-                expect(header).to.equal('Hawk mac=\"6PrybJTJs20jsgBw5eilXpcytD8kUbaIKNYXL+6g0ns=\", hash=\"f9cDF/TDm7TkYRLnGwRMfeDzT6LixQVLvrIKhh0vgmM=\"');
+                var header = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: null });
+                expect(header).to.equal('Abriva mac=\"IKe70g2GIbli6sGrQgXU2C8ErSLmdhgsc57Yv/lmBDYBYRTI8jaRBTxbYOBXNhXUiCiPYlXED4jhHSi2IPZYeSY=\", hash=\"Bn8OiCB6zOHTKGtRrZY47DgOxWfvXqqrW8fomUhPnKs=\"');
                 done();
             });
 
             it('errors on missing artifacts', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
                 };
 
-                var header = Hawk.server.header(credentials, null, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                var header = Abriva.server.header(credentials, null, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(header).to.equal('');
                 done();
             });
@@ -820,13 +825,13 @@ describe('Hawk', function () {
             it('errors on invalid artifacts', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'sha256',
                     user: 'steve'
                 };
 
-                var header = Hawk.server.header(credentials, 5, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                var header = Abriva.server.header(credentials, 5, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(header).to.equal('');
                 done();
             });
@@ -843,10 +848,10 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(null, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                var header = Abriva.server.header(null, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(header).to.equal('');
                 done();
             });
@@ -854,7 +859,7 @@ describe('Hawk', function () {
             it('errors on invalid credentials (key)', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     algorithm: 'sha256',
                     user: 'steve'
                 };
@@ -869,10 +874,10 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                var header = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(header).to.equal('');
                 done();
             });
@@ -880,7 +885,7 @@ describe('Hawk', function () {
             it('errors on invalid algorithm', function (done) {
 
                 var credentials = {
-                    id: '123456',
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                     algorithm: 'x',
                     user: 'steve'
@@ -896,10 +901,10 @@ describe('Hawk', function () {
                     hash: 'nJjkVtBE5Y/Bk38Aiokwn0jiJxt/0S2WRSUwWLCf5xk=',
                     ext: 'some-app-data',
                     mac: 'dvIvMThwi28J61Jc3P0ryAhuKpanU63GXdx6hkmQkJA=',
-                    id: '123456'
+                    address: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK'
                 };
 
-                var header = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                var header = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(header).to.equal('');
                 done();
             });
@@ -909,12 +914,12 @@ describe('Hawk', function () {
 
             it('errors on invalid authorization (ts)', function (done) {
 
-                credentialsFunc('123456', function (err, credentials) {
+                credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                    var auth = Hawk.client.message('example.com', 8080, 'some message', { credentials: credentials });
+                    var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
                     delete auth.ts;
 
-                    Hawk.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
+                    Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
 
                         expect(err).to.exist;
                         expect(err.message).to.equal('Invalid authorization');
@@ -925,12 +930,12 @@ describe('Hawk', function () {
 
             it('errors on invalid authorization (nonce)', function (done) {
 
-                credentialsFunc('123456', function (err, credentials) {
+                credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                    var auth = Hawk.client.message('example.com', 8080, 'some message', { credentials: credentials });
+                    var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
                     delete auth.nonce;
 
-                    Hawk.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
+                    Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
 
                         expect(err).to.exist;
                         expect(err.message).to.equal('Invalid authorization');
@@ -941,12 +946,12 @@ describe('Hawk', function () {
 
             it('errors on invalid authorization (hash)', function (done) {
 
-                credentialsFunc('123456', function (err, credentials) {
+                credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                    var auth = Hawk.client.message('example.com', 8080, 'some message', { credentials: credentials });
+                    var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
                     delete auth.hash;
 
-                    Hawk.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
+                    Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
 
                         expect(err).to.exist;
                         expect(err.message).to.equal('Invalid authorization');
@@ -957,11 +962,11 @@ describe('Hawk', function () {
 
             it('errors with credentials', function (done) {
 
-                credentialsFunc('123456', function (err, credentials) {
+                credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                    var auth = Hawk.client.message('example.com', 8080, 'some message', { credentials: credentials });
+                    var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
 
-                    Hawk.server.authenticateMessage('example.com', 8080, 'some message', auth, function (id, callback) { callback(new Error('something'), { some: 'value' }); }, {}, function (err, credentials) {
+                    Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, function (id, callback) { callback(new Error('something'), { some: 'value' }); }, {}, function (err, credentials) {
 
                         expect(err).to.exist;
                         expect(err.message).to.equal('something');
@@ -976,8 +981,8 @@ describe('Hawk', function () {
 
             it('checks payload hash', function (done) {
 
-                expect(Hawk.server.authenticatePayloadHash('abcdefg', { hash: 'abcdefg' })).to.equal(true);
-                expect(Hawk.server.authenticatePayloadHash('1234567', { hash: 'abcdefg' })).to.equal(false);
+                expect(Abriva.server.authenticatePayloadHash('abcdefg', { hash: 'abcdefg' })).to.equal(true);
+                expect(Abriva.server.authenticatePayloadHash('1234567', { hash: 'abcdefg' })).to.equal(false);
                 done();
             });
         });

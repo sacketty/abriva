@@ -6,6 +6,7 @@ var networks = require('../lib/networks')
 var Address = require('../lib/address')
 var HDNode = require('../lib/eccrypto/hdnode')
 var Wallet = require('../lib/wallet')
+var util = require('util')
 
 var Lab = require('lab');
 // Test shortcuts
@@ -16,18 +17,6 @@ var beforeEach = Lab.beforeEach;
 var after = Lab.after;
 var describe = Lab.experiment;
 var it = Lab.test;
-
-function fakeTxHash(i) {
-  var hash = new Buffer(32)
-  hash.fill(i)
-  return hash
-}
-
-function fakeTxId(i) {
-  var hash = fakeTxHash(i)
-  Array.prototype.reverse.call(hash)
-  return hash.toString('hex')
-}
 
 describe('Wallet', function() {
   var seed
@@ -147,7 +136,6 @@ describe('Wallet', function() {
 
     it('returns the private key at the given index of internal account', function(done){
       var wallet = new Wallet(seed, networks.testnet)
-
       assertEqual(wallet.getInternalPrivateKey(0), wallet.getInternalAccount().derive(0).privKey)
       assertEqual(wallet.getInternalPrivateKey(1), wallet.getInternalAccount().derive(1).privKey)
       done()
@@ -175,6 +163,7 @@ describe('Wallet', function() {
         wallet.getPrivateKeyForAddress("mnXiDR4MKsFxcKJEZjx4353oXvo55iuptn"),
         wallet.getInternalAccount().derive(0).privKey
       )
+      wallet.generateAddress()
       done()
     })
 

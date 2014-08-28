@@ -2,7 +2,7 @@
 
 var Url = require('url');
 var Lab = require('lab');
-var Hawk = require('../lib');
+var Abriva = require('../lib');
 
 
 // Declare internals
@@ -19,12 +19,12 @@ var describe = Lab.experiment;
 var it = Lab.test;
 
 
-describe('Hawk', function () {
+describe('Abriva', function () {
 
     var credentialsFunc = function (id, callback) {
 
         var credentials = {
-            id: id,
+            adr: id,
             key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
             algorithm: (id === '1' ? 'sha1' : 'sha256'),
             user: 'steve'
@@ -42,12 +42,12 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header(Url.parse('http://example.com:8080/resource/4?filter=a'), req.method, { credentials: credentials, ext: 'some-app-data' }).field;
+            req.authorization = Abriva.client.header(Url.parse('http://example.com:8080/resource/4?filter=a'), req.method, { credentials: credentials, ext: 'some-app-data' }).field;
             expect(req.authorization).to.exist;
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -70,17 +70,17 @@ describe('Hawk', function () {
 
         var payload = 'some not so random text';
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            var reqHeader = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
+            var reqHeader = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
             req.headers.authorization = reqHeader.field;
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
                 expect(artifacts.ext).to.equal('some-app-data');
-                expect(Hawk.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
+                expect(Abriva.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
 
                 var res = {
                     headers: {
@@ -88,10 +88,10 @@ describe('Hawk', function () {
                     }
                 };
 
-                res.headers['server-authorization'] = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                res.headers['server-authorization'] = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(res.headers['server-authorization']).to.exist;
 
-                expect(Hawk.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(true);
+                expect(Abriva.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(true);
                 done();
             });
         });
@@ -110,17 +110,17 @@ describe('Hawk', function () {
 
         var payload = 'some not so random text';
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            var reqHeader = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
+            var reqHeader = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
             req.headers.authorization = reqHeader.field;
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
                 expect(artifacts.ext).to.equal('some-app-data');
-                expect(Hawk.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
+                expect(Abriva.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
 
                 var res = {
                     headers: {
@@ -128,10 +128,10 @@ describe('Hawk', function () {
                     }
                 };
 
-                res.headers['server-authorization'] = Hawk.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
+                res.headers['server-authorization'] = Abriva.server.header(credentials, artifacts, { payload: 'some reply', contentType: 'text/plain', ext: 'response-specific' });
                 expect(res.headers['server-authorization']).to.exist;
 
-                expect(Hawk.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(true);
+                expect(Abriva.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(true);
                 done();
             });
         });
@@ -150,17 +150,17 @@ describe('Hawk', function () {
 
         var payload = 'some not so random text';
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            var reqHeader = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
+            var reqHeader = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
             req.headers.authorization = reqHeader.field;
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
                 expect(artifacts.ext).to.equal('some-app-data');
-                expect(Hawk.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
+                expect(Abriva.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
 
                 var res = {
                     headers: {
@@ -168,10 +168,10 @@ describe('Hawk', function () {
                     }
                 };
 
-                res.headers['server-authorization'] = Hawk.server.header(credentials, artifacts);
+                res.headers['server-authorization'] = Abriva.server.header(credentials, artifacts);
                 expect(res.headers['server-authorization']).to.exist;
 
-                expect(Hawk.client.authenticate(res, credentials, artifacts)).to.equal(true);
+                expect(Abriva.client.authenticate(res, credentials, artifacts)).to.equal(true);
                 done();
             });
         });
@@ -190,17 +190,17 @@ describe('Hawk', function () {
 
         var payload = 'some not so random text';
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            var reqHeader = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
+            var reqHeader = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', payload: payload, contentType: req.headers['content-type'] });
             req.headers.authorization = reqHeader.field;
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
                 expect(artifacts.ext).to.equal('some-app-data');
-                expect(Hawk.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
+                expect(Abriva.server.authenticatePayload(payload, credentials, artifacts, req.headers['content-type'])).to.equal(true);
 
                 var res = {
                     headers: {
@@ -208,10 +208,10 @@ describe('Hawk', function () {
                     }
                 };
 
-                res.headers['server-authorization'] = Hawk.server.header(credentials, artifacts);
+                res.headers['server-authorization'] = Abriva.server.header(credentials, artifacts);
                 expect(res.headers['server-authorization']).to.exist;
 
-                expect(Hawk.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(false);
+                expect(Abriva.client.authenticate(res, credentials, artifacts, { payload: 'some reply' })).to.equal(false);
                 done();
             });
         });
@@ -226,10 +226,10 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -248,16 +248,16 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
                 expect(artifacts.ext).to.equal('some-app-data');
-                expect(Hawk.server.authenticatePayload('hola!', credentials, artifacts)).to.be.true;
-                expect(Hawk.server.authenticatePayload('hello!', credentials, artifacts)).to.be.false;
+                expect(Abriva.server.authenticatePayload('hola!', credentials, artifacts)).to.be.true;
+                expect(Abriva.server.authenticatePayload('hello!', credentials, artifacts)).to.be.false;
                 done();
             });
         });
@@ -272,10 +272,10 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, { payload: 'hola!' }, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, { payload: 'hola!' }, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -294,10 +294,10 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', app: 'asd23ased' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', app: 'asd23ased' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -317,10 +317,10 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', app: 'asd23ased', dlg: '23434szr3q4d' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data', app: 'asd23ased', dlg: '23434szr3q4d' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -341,10 +341,10 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
-            Hawk.server.authenticate(req, credentialsFunc, { payload: 'byebye!' }, function (err, credentials, artifacts) {
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, payload: 'hola!', ext: 'some-app-data' }).field;
+            Abriva.server.authenticate(req, credentialsFunc, { payload: 'byebye!' }, function (err, credentials, artifacts) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Bad payload hash');
@@ -362,12 +362,12 @@ describe('Hawk', function () {
             port: 8080
         };
 
-        credentialsFunc('123456', function (err, credentials) {
+        credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-            req.authorization = Hawk.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data' }).field;
+            req.authorization = Abriva.client.header('http://example.com:8080/resource/4?filter=a', req.method, { credentials: credentials, ext: 'some-app-data' }).field;
             req.url = '/something/else';
 
-            Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+            Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
                 expect(err).to.exist;
                 expect(credentials).to.exist;

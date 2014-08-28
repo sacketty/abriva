@@ -4,7 +4,7 @@ var Http = require('http');
 var Url = require('url');
 var Hoek = require('hoek');
 var Lab = require('lab');
-var Hawk = require('../lib');
+var Abriva = require('../lib');
 
 
 // Declare internals
@@ -21,14 +21,14 @@ var describe = Lab.experiment;
 var it = Lab.test;
 
 
-describe('Hawk', function () {
+describe('Abriva', function () {
 
     describe('Uri', function () {
 
         var credentialsFunc = function (id, callback) {
 
             var credentials = {
-                id: id,
+                ard: id,
                 key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                 algorithm: 'sha256',
                 user: 'steve'
@@ -46,12 +46,12 @@ describe('Hawk', function () {
                 port: 80
             };
 
-            credentialsFunc('123456', function (err, credentials) {
+            credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                var bewit = Hawk.uri.getBewit('http://example.com/resource/4?a=1&b=2', { credentials: credentials, ttlSec: 60 * 60 * 24 * 365 * 100, ext: 'some-app-data' });
+                var bewit = Abriva.uri.getBewit('http://example.com/resource/4?a=1&b=2', { credentials: credentials, ttlSec: 60 * 60 * 24 * 365 * 100, ext: 'some-app-data' });
                 req.url += '&bewit=' + bewit;
 
-                Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+                Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -70,12 +70,12 @@ describe('Hawk', function () {
                 port: 80
             };
 
-            credentialsFunc('123456', function (err, credentials) {
+            credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
-                var bewit = Hawk.uri.getBewit('http://example.com/resource/4?a=1&b=2', { credentials: credentials, ttlSec: 60 * 60 * 24 * 365 * 100 });
+                var bewit = Abriva.uri.getBewit('http://example.com/resource/4?a=1&b=2', { credentials: credentials, ttlSec: 60 * 60 * 24 * 365 * 100 });
                 req.url += '&bewit=' + bewit;
 
-                Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+                Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                     expect(err).to.not.exist;
                     expect(credentials.user).to.equal('steve');
@@ -93,7 +93,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -111,7 +111,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -129,7 +129,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.not.exist;
                 expect(credentials.user).to.equal('steve');
@@ -148,7 +148,7 @@ describe('Hawk', function () {
                 authorization: 'Basic asdasdasdasd'
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Multiple authentications');
@@ -158,7 +158,7 @@ describe('Hawk', function () {
 
         it('should fail on method other than GET', function (done) {
 
-            credentialsFunc('123456', function (err, credentials) {
+            credentialsFunc('18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK', function (err, credentials) {
 
                 var req = {
                     method: 'POST',
@@ -167,9 +167,9 @@ describe('Hawk', function () {
                     port: 8080
                 };
 
-                var exp = Math.floor(Hawk.utils.now() / 1000) + 60;
+                var exp = Math.floor(Abriva.utils.now() / 1000) + 60;
                 var ext = 'some-app-data';
-                var mac = Hawk.crypto.calculateMac('bewit', credentials, {
+                var mac = Abriva.crypto.calculateMac('bewit', credentials, {
                     timestamp: exp,
                     nonce: '',
                     method: req.method,
@@ -183,7 +183,7 @@ describe('Hawk', function () {
 
                 req.url += '&bewit=' + Hoek.base64urlEncode(bewit);
 
-                Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+                Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                     expect(err).to.exist;
                     expect(err.output.payload.message).to.equal('Invalid method');
@@ -202,7 +202,7 @@ describe('Hawk', function () {
                 }
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Invalid Host header');
@@ -219,7 +219,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Empty bewit');
@@ -237,7 +237,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Invalid bewit encoding');
@@ -255,7 +255,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.not.exist;
@@ -273,7 +273,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Invalid bewit structure');
@@ -290,7 +290,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Missing bewit attributes');
@@ -307,7 +307,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Missing bewit attributes');
@@ -324,7 +324,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Access expired');
@@ -341,7 +341,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(Hawk.error.badRequest('Boom')); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(Abriva.error.badRequest('Boom')); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Boom');
@@ -358,7 +358,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(Hawk.error.badRequest('Boom'), { some: 'value' }); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(Abriva.error.badRequest('Boom'), { some: 'value' }); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Boom');
@@ -376,7 +376,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(null, null); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(null, null); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Unknown credentials');
@@ -393,7 +393,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(null, {}); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(null, {}); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.message).to.equal('Invalid credentials');
@@ -410,7 +410,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(null, { key: 'xxx', algorithm: 'xxx' }); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(null, { key: 'xxx', algorithm: 'xxx' }); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.message).to.equal('Unknown algorithm');
@@ -427,7 +427,7 @@ describe('Hawk', function () {
                 port: 8080
             };
 
-            Hawk.uri.authenticate(req, function (id, callback) { callback(null, { key: 'xxx', algorithm: 'sha256' }); }, {}, function (err, credentials, attributes) {
+            Abriva.uri.authenticate(req, function (id, callback) { callback(null, { key: 'xxx', algorithm: 'sha256' }); }, {}, function (err, credentials, attributes) {
 
                 expect(err).to.exist;
                 expect(err.output.payload.message).to.equal('Bad mac');
@@ -441,12 +441,12 @@ describe('Hawk', function () {
         it('returns a valid bewit value', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
             expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdca3NjeHdOUjJ0SnBQMVQxekRMTlBiQjVVaUtJVTl0T1NKWFRVZEc3WDloOD1ceGFuZHlhbmR6');
             done();
         });
@@ -454,12 +454,12 @@ describe('Hawk', function () {
         it('returns a valid bewit value (explicit port)', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com:8080/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com:8080/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
             expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdcaFpiSjNQMmNLRW80a3kwQzhqa1pBa1J5Q1p1ZWc0V1NOYnhWN3ZxM3hIVT1ceGFuZHlhbmR6');
             done();
         });
@@ -467,12 +467,12 @@ describe('Hawk', function () {
         it('returns a valid bewit value (null ext)', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: null });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: null });
             expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdcSUdZbUxnSXFMckNlOEN4dktQczRKbFdJQStValdKSm91d2dBUmlWaENBZz1c');
             done();
         });
@@ -480,12 +480,12 @@ describe('Hawk', function () {
         it('returns a valid bewit value (parsed uri)', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit(Url.parse('https://example.com/somewhere/over/the/rainbow'), { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit(Url.parse('https://example.com/somewhere/over/the/rainbow'), { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
             expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdca3NjeHdOUjJ0SnBQMVQxekRMTlBiQjVVaUtJVTl0T1NKWFRVZEc3WDloOD1ceGFuZHlhbmR6');
             done();
         });
@@ -493,12 +493,12 @@ describe('Hawk', function () {
         it('errors on invalid options', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', 4);
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', 4);
             expect(bewit).to.equal('');
             done();
         });
@@ -506,12 +506,12 @@ describe('Hawk', function () {
         it('errors on missing uri', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
@@ -519,12 +519,12 @@ describe('Hawk', function () {
         it('errors on invalid uri', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit(5, { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Hawk.utils.now(), ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit(5, { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
@@ -536,14 +536,14 @@ describe('Hawk', function () {
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 3000, ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 3000, ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
 
         it('errors on missing credentials', function (done) {
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { ttlSec: 3000, ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { ttlSec: 3000, ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
@@ -551,11 +551,11 @@ describe('Hawk', function () {
         it('errors on invalid credentials (key)', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 algorithm: 'sha256'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 3000, ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 3000, ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
@@ -563,12 +563,12 @@ describe('Hawk', function () {
         it('errors on invalid algorithm', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'hmac-sha-0'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, ext: 'xandyandz' });
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, ext: 'xandyandz' });
             expect(bewit).to.equal('');
             done();
         });
@@ -576,12 +576,12 @@ describe('Hawk', function () {
         it('errors on missing options', function (done) {
 
             var credentials = {
-                id: '123456',
+                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'hmac-sha-0'
             };
 
-            var bewit = Hawk.uri.getBewit('https://example.com/somewhere/over/the/rainbow');
+            var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow');
             expect(bewit).to.equal('');
             done();
         });
