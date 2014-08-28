@@ -108,9 +108,9 @@ describe('Hawk', function () {
 
         describe('#unauthorized', function () {
 
-            it('returns a hawk 401', function (done) {
+            it('returns a Abriva 401', function (done) {
 
-                expect(Hawk.utils.unauthorized('kaboom').output.headers['WWW-Authenticate']).to.equal('Hawk error="kaboom"');
+                expect(Hawk.utils.unauthorized('kaboom').output.headers['WWW-Authenticate']).to.equal('Abriva error="kaboom"');
                 done();
             });
         });

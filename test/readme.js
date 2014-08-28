@@ -2,7 +2,7 @@
 
 var Lab = require('lab');
 var Hoek = require('hoek');
-var Hawk = require('../lib');
+var Abriva = require('../lib');
 
 
 // Declare internals
@@ -19,14 +19,14 @@ var describe = Lab.experiment;
 var it = Lab.test;
 
 
-describe('Hawk', function () {
+describe('Abriva', function () {
 
     describe('README', function () {
 
         describe('core', function () {
 
             var credentials = {
-                id: 'dh37fgj492je',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                 algorithm: 'sha256'
             };
@@ -40,15 +40,15 @@ describe('Hawk', function () {
 
             it('should generate a header protocol example', function (done) {
 
-                var header = Hawk.client.header('http://example.com:8000/resource/1?b=1&a=2', 'GET', options).field;
+                var header = Abriva.client.header('http://example.com:8000/resource/1?b=1&a=2', 'GET', options).field;
 
-                expect(header).to.equal('Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="');
+                expect(header).to.equal('Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="Hwvm6HlYWYxP542mZbaqLYHBrxZHbTLnDS90IQ2u1XhCDIT3bDUA+4xQSkitOlTOU94v92VzD8Tg3sjcFUa0ehw="');
                 done();
             });
 
             it('should generate a normalized string protocol example', function (done) {
 
-                var normalized = Hawk.crypto.generateNormalizedString('header', {
+                var normalized = Abriva.crypto.generateNormalizedString('header', {
                     credentials: credentials,
                     ts: options.timestamp,
                     nonce: options.nonce,
@@ -59,25 +59,25 @@ describe('Hawk', function () {
                     ext: options.ext
                 });
 
-                expect(normalized).to.equal('hawk.1.header\n1353832234\nj4h3g2\nGET\n/resource?a=1&b=2\nexample.com\n8000\n\nsome-app-ext-data\n');
+                expect(normalized).to.equal('abriva.1.header\n1353832234\nj4h3g2\nGET\n/resource?a=1&b=2\nexample.com\n8000\n\nsome-app-ext-data\n');
                 done();
             });
 
             var payloadOptions = Hoek.clone(options);
-            payloadOptions.payload = 'Thank you for flying Hawk';
+            payloadOptions.payload = 'Thank you for flying Abriva';
             payloadOptions.contentType = 'text/plain';
 
             it('should generate a header protocol example (with payload)', function (done) {
 
-                var header = Hawk.client.header('http://example.com:8000/resource/1?b=1&a=2', 'POST', payloadOptions).field;
+                var header = Abriva.client.header('http://example.com:8000/resource/1?b=1&a=2', 'POST', payloadOptions).field;
 
-                expect(header).to.equal('Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", hash="Yi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=", ext="some-app-ext-data", mac="aSe1DERmZuRl3pI36/9BdZmnErTw3sNzOOAUlfeKjVw="');
+                expect(header).to.equal('Abriva adr="18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK", ts="1353832234", nonce="j4h3g2", hash="rz/mHF1PmY+uTK+ggmGjQA1gIRG+YQaZKA/6KAUjnVs=", ext="some-app-ext-data", mac="IIxvCZZkZbZ0QaoH8lZ7vfwPwEKwm9aYq5H6CqzBgKFyY3BXU2UCe/UzbaGIV4VAlcXEQfaEh8TFC95OWlFeR1I="');
                 done();
             });
 
             it('should generate a normalized string protocol example (with payload)', function (done) {
 
-                var normalized = Hawk.crypto.generateNormalizedString('header', {
+                var normalized = Abriva.crypto.generateNormalizedString('header', {
                     credentials: credentials,
                     ts: options.timestamp,
                     nonce: options.nonce,
@@ -85,11 +85,11 @@ describe('Hawk', function () {
                     resource: '/resource?a=1&b=2',
                     host: 'example.com',
                     port: 8000,
-                    hash: Hawk.crypto.calculatePayloadHash(payloadOptions.payload, credentials.algorithm, payloadOptions.contentType),
+                    hash: Abriva.crypto.calculatePayloadHash(payloadOptions.payload, credentials.algorithm, payloadOptions.contentType),
                     ext: options.ext
                 });
 
-                expect(normalized).to.equal('hawk.1.header\n1353832234\nj4h3g2\nPOST\n/resource?a=1&b=2\nexample.com\n8000\nYi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=\nsome-app-ext-data\n');
+                expect(normalized).to.equal('abriva.1.header\n1353832234\nj4h3g2\nPOST\n/resource?a=1&b=2\nexample.com\n8000\nrz/mHF1PmY+uTK+ggmGjQA1gIRG+YQaZKA/6KAUjnVs=\nsome-app-ext-data\n');
                 done();
             });
         });

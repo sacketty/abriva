@@ -6,7 +6,6 @@ var Hoek = require('hoek');
 var Lab = require('lab');
 var Abriva = require('../lib');
 
-
 // Declare internals
 
 var internals = {};
@@ -28,7 +27,7 @@ describe('Abriva', function () {
         var credentialsFunc = function (id, callback) {
 
             var credentials = {
-                ard: id,
+                adr: id,
                 key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
                 algorithm: 'sha256',
                 user: 'steve'
@@ -88,7 +87,8 @@ describe('Abriva', function () {
 
             var req = {
                 method: 'GET',
-                url: '/resource/4?a=1&b=2&bewit=MTIzNDU2XDQ1MTE0ODQ2MjFcMzFjMmNkbUJFd1NJRVZDOVkva1NFb2c3d3YrdEVNWjZ3RXNmOGNHU2FXQT1cc29tZS1hcHAtZGF0YQ',
+//                url: '/resource/4?a=1&b=2&bewit=MTIzNDU2XDQ1MTE0ODQ2MjFcMzFjMmNkbUJFd1NJRVZDOVkva1NFb2c3d3YrdEVNWjZ3RXNmOGNHU2FXQT1cc29tZS1hcHAtZGF0YQ',
+                url: '/resource/4?a=1&b=2&bewit=MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1w0NTExNDg0NjIxXEg0WnQvMWx2UWl4SDQ0L0ZWWTNNRkg2Y0N6L3htZWFQWUVQNHBSWlQ5c3hGTmlEQTJyemIwRC9rZGRTdmNTb3NsUjV6Z0N2Y3psUXlCN3ZHVXQvai9Fdz1cc29tZS1hcHAtZGF0YQ',
                 host: 'example.com',
                 port: 8080
             };
@@ -106,7 +106,7 @@ describe('Abriva', function () {
 
             var req = {
                 method: 'GET',
-                url: '/resource/4?bewit=MTIzNDU2XDQ1MTE0ODQ2MjFcMzFjMmNkbUJFd1NJRVZDOVkva1NFb2c3d3YrdEVNWjZ3RXNmOGNHU2FXQT1cc29tZS1hcHAtZGF0YQ&a=1&b=2',
+                url: '/resource/4?bewit=MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1w0NTExNDg0NjIxXEg0WnQvMWx2UWl4SDQ0L0ZWWTNNRkg2Y0N6L3htZWFQWUVQNHBSWlQ5c3hGTmlEQTJyemIwRC9rZGRTdmNTb3NsUjV6Z0N2Y3psUXlCN3ZHVXQvai9Fdz1cc29tZS1hcHAtZGF0YQ&a=1&b=2',
                 host: 'example.com',
                 port: 8080
             };
@@ -124,7 +124,7 @@ describe('Abriva', function () {
 
             var req = {
                 method: 'GET',
-                url: '/resource/4?bewit=MTIzNDU2XDQ1MTE0ODQ2NDFcZm1CdkNWT3MvcElOTUUxSTIwbWhrejQ3UnBwTmo4Y1VrSHpQd3Q5OXJ1cz1cc29tZS1hcHAtZGF0YQ',
+                url: '/resource/4?bewit=MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1w0NTExNDg0NjIxXElDWCs0ZDY1bW5XVytoN3lFeHhQN1ByN0tCb2ZOSlUvZUpIcTRydXAxZ0loZWQrRlB3SjZDT1VFRno1R1JzczB3ck1iMGFXelY4cmJQaERrOFVmb3pVMD1cc29tZS1hcHAtZGF0YQ',
                 host: 'example.com',
                 port: 8080
             };
@@ -441,59 +441,59 @@ describe('Abriva', function () {
         it('returns a valid bewit value', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
             var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
-            expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdca3NjeHdOUjJ0SnBQMVQxekRMTlBiQjVVaUtJVTl0T1NKWFRVZEc3WDloOD1ceGFuZHlhbmR6');
+            expect(bewit).to.equal('MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1wxMzU2NDIwNzA3XEgxdmRtamY2NnVCSDJKWGJEczBxVjB0ckFwR3hYaGppR2UwV05yYkdBaGNNU1YvZUV0WWR4akg4bTUxakQvK0NlcmViS2R3aDRrc0xwNDBua0hhR3ZSRT1ceGFuZHlhbmR6');
             done();
         });
 
         it('returns a valid bewit value (explicit port)', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
             var bewit = Abriva.uri.getBewit('https://example.com:8080/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
-            expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdcaFpiSjNQMmNLRW80a3kwQzhqa1pBa1J5Q1p1ZWc0V1NOYnhWN3ZxM3hIVT1ceGFuZHlhbmR6');
+            expect(bewit).to.equal('MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1wxMzU2NDIwNzA3XElMTGVCN29RV21RdEpHQ1Y1MEoxYjNPU1ZNVGdIdy9mV0Q1eWlYak9ydWl2SVhCZHNINk9PSTZubG01TnhDSnpYdnh5c1R6SDhMdVNuVGwzdUx3SnVzYz1ceGFuZHlhbmR6');
             done();
         });
 
         it('returns a valid bewit value (null ext)', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
             var bewit = Abriva.uri.getBewit('https://example.com/somewhere/over/the/rainbow', { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: null });
-            expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdcSUdZbUxnSXFMckNlOEN4dktQczRKbFdJQStValdKSm91d2dBUmlWaENBZz1c');
+            expect(bewit).to.equal('MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1wxMzU2NDIwNzA3XEh5bitZQnRoYkZuOEN1MTVBTGhmT096bnVIbTAvT0h2bDVEN2RBY0Zzd3ZMQzRsQ1VFUXhGZFo0b1dWUVFSS2J0cmdLQ2pVbmxGT0VBdVdPT0p6cmxUcz1c');
             done();
         });
 
         it('returns a valid bewit value (parsed uri)', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
 
             var bewit = Abriva.uri.getBewit(Url.parse('https://example.com/somewhere/over/the/rainbow'), { credentials: credentials, ttlSec: 300, localtimeOffsetMsec: 1356420407232 - Abriva.utils.now(), ext: 'xandyandz' });
-            expect(bewit).to.equal('MTIzNDU2XDEzNTY0MjA3MDdca3NjeHdOUjJ0SnBQMVQxekRMTlBiQjVVaUtJVTl0T1NKWFRVZEc3WDloOD1ceGFuZHlhbmR6');
+            expect(bewit).to.equal('MThaWHZzcFR1R1I4YWM0WEYzRUhHZWd5NmRmOTN2Y1Z6S1wxMzU2NDIwNzA3XEgxdmRtamY2NnVCSDJKWGJEczBxVjB0ckFwR3hYaGppR2UwV05yYkdBaGNNU1YvZUV0WWR4akg4bTUxakQvK0NlcmViS2R3aDRrc0xwNDBua0hhR3ZSRT1ceGFuZHlhbmR6');
             done();
         });
 
         it('errors on invalid options', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
@@ -506,7 +506,7 @@ describe('Abriva', function () {
         it('errors on missing uri', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
@@ -519,7 +519,7 @@ describe('Abriva', function () {
         it('errors on invalid uri', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'sha256'
             };
@@ -551,7 +551,7 @@ describe('Abriva', function () {
         it('errors on invalid credentials (key)', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 algorithm: 'sha256'
             };
 
@@ -563,7 +563,7 @@ describe('Abriva', function () {
         it('errors on invalid algorithm', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'hmac-sha-0'
             };
@@ -576,7 +576,7 @@ describe('Abriva', function () {
         it('errors on missing options', function (done) {
 
             var credentials = {
-                id: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
+                adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
                 key: '2983d45yun89q',
                 algorithm: 'hmac-sha-0'
             };
