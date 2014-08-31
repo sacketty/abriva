@@ -23,7 +23,7 @@ Server code:
 
 ```javascript
 var Http = require('http');
-var Hawk = require('hawk');
+var Abriva = require('abriva');
 
 
 // Credentials lookup function
@@ -45,7 +45,7 @@ var handler = function (req, res) {
 
     // Authenticate incoming request
 
-    Hawk.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
+    Abriva.server.authenticate(req, credentialsFunc, {}, function (err, credentials, artifacts) {
 
         // Prepare response
 
@@ -54,7 +54,7 @@ var handler = function (req, res) {
 
         // Generate Server-Authorization response header
 
-        var header = Hawk.server.header(credentials, artifacts, { payload: payload, contentType: headers['Content-Type'] });
+        var header = Abriva.server.header(credentials, artifacts, { payload: payload, contentType: headers['Content-Type'] });
         headers['Server-Authorization'] = header;
 
         // Send the response back
@@ -73,7 +73,7 @@ Client code:
 
 ```javascript
 var Request = require('request');
-var Hawk = require('hawk');
+var Abriva = require('abriva');
 
 
 // Client credentials
@@ -94,7 +94,7 @@ var requestOptions = {
 
 // Generate Authorization request header
 
-var header = Hawk.client.header('http://example.com:8000/resource/1?b=1&a=2', 'GET', { credentials: credentials, ext: 'some-app-data' });
+var header = Abriva.client.header('http://example.com:8000/resource/1?b=1&a=2', 'GET', { credentials: credentials, ext: 'some-app-data' });
 requestOptions.headers.Authorization = header.field;
 
 // Send authenticated request
@@ -103,7 +103,7 @@ Request(requestOptions, function (error, response, body) {
 
     // Authenticate the server's response
 
-    var isValid = Hawk.client.authenticate(response, credentials, header.artifacts, { payload: body });
+    var isValid = Abriva.client.authenticate(response, credentials, header.artifacts, { payload: body });
 
     // Output results
 
@@ -111,11 +111,11 @@ Request(requestOptions, function (error, response, body) {
 });
 ```
 
-**Hawk** utilized the [**SNTP**](https://github.com/hueniverse/sntp) module for time sync management. By default, the local
+**Abriva** utilized the [**SNTP**](https://github.com/hueniverse/sntp) module for time sync management. By default, the local
 machine time is used. To automatically retrieve and synchronice the clock within the application, use the SNTP 'start()' method.
 
 ```javascript
-Hawk.sntp.start();
+Abriva.sntp.start();
 ```
 
 
@@ -133,11 +133,11 @@ The resource server returns an authentication challenge.
 
 ```
 HTTP/1.1 401 Unauthorized
-WWW-Authenticate: Hawk
+WWW-Authenticate: Abriva
 ```
 
-The client has previously obtained a set of **Hawk** credentials for accessing resources on the "http://example.com/"
-server. The **Hawk** credentials issued to the client include the following attributes:
+The client has previously obtained a set of **Abriva** credentials for accessing resources on the "http://example.com/"
+server. The **Abriva** credentials issued to the client include the following attributes:
 
 * Key identifier: dh37fgj492je
 * Key: werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn
@@ -148,7 +148,7 @@ The client generates the authentication header by calculating a timestamp (e.g. 
 character):
 
 ```
-hawk.1.header
+abriva.1.header
 1353832234
 j4h3g2
 GET
@@ -167,39 +167,39 @@ The result is base64-encoded to produce the request MAC:
 6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE=
 ```
 
-The client includes the **Hawk** key identifier, timestamp, nonce, application specific data, and request MAC with the request using
+The client includes the **Abriva** key identifier, timestamp, nonce, application specific data, and request MAC with the request using
 the HTTP `Authorization` request header field:
 
 ```
 GET /resource/1?b=1&a=2 HTTP/1.1
 Host: example.com:8000
-Authorization: Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="
+Authorization: Abriva id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="
 ```
 
 The server validates the request by calculating the request MAC again based on the request received and verifies the validity
-and scope of the **Hawk** credentials. If valid, the server responds with the requested resource.
+and scope of the **Abriva** credentials. If valid, the server responds with the requested resource.
 
 
 ### Payload Validation
 
-**Hawk** provides optional payload validation. When generating the authentication header, the client calculates a payload hash
+**Abriva** provides optional payload validation. When generating the authentication header, the client calculates a payload hash
 using the specified hash algorithm. The hash is calculated over the concatenated value of (each followed by a newline character):
-* `hawk.1.payload`
+* `abriva.1.payload`
 * the content-type in lowercase, without any parameters (e.g. `application/json`)
 * the request payload prior to any content encoding (the exact representation requirements should be specified by the server for payloads other than simple single-part ascii to ensure interoperability)
 
 For example:
 
-* Payload: `Thank you for flying Hawk`
+* Payload: `Thank you for flying Abriva`
 * Content Type: `text/plain`
 * Hash (sha256): `Yi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=`
 
 Results in the following input to the payload hash function (newline terminated values):
 
 ```
-hawk.1.payload
+abriva.1.payload
 text/plain
-Thank you for flying Hawk
+Thank you for flying Abriva
 
 ```
 
@@ -212,7 +212,7 @@ Yi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=
 The client constructs the normalized request string (newline terminated values):
 
 ```
-hawk.1.header
+abriva.1.header
 1353832234
 j4h3g2
 POST
@@ -224,13 +224,13 @@ some-app-ext-data
 
 ```
 
-Then calculates the request MAC and includes the **Hawk** key identifier, timestamp, nonce, payload hash, application specific data,
+Then calculates the request MAC and includes the **Abriva** key identifier, timestamp, nonce, payload hash, application specific data,
 and request MAC, with the request using the HTTP `Authorization` request header field:
 
 ```
 POST /resource/1?a=1&b=2 HTTP/1.1
 Host: example.com:8000
-Authorization: Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", hash="Yi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=", ext="some-app-ext-data", mac="aSe1DERmZuRl3pI36/9BdZmnErTw3sNzOOAUlfeKjVw="
+Authorization: Abriva id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", hash="Yi9LfIIFRtBEPt74PVmbTF/xVAwPn7ub15ePICfgnuY=", ext="some-app-ext-data", mac="aSe1DERmZuRl3pI36/9BdZmnErTw3sNzOOAUlfeKjVw="
 ```
 
 It is up to the server if and when it validates the payload for any given request, based solely on it's security policy
@@ -251,8 +251,8 @@ by the client, the payload may be modified by an attacker.
 
 ## Response Payload Validation
 
-**Hawk** provides partial response payload validation. The server includes the `Server-Authorization` response header which enables the
-client to authenticate the response and ensure it is talking to the right server. **Hawk** defines the HTTP `Server-Authorization` header
+**Abriva** provides partial response payload validation. The server includes the `Server-Authorization` response header which enables the
+client to authenticate the response and ensure it is talking to the right server. **Abriva** defines the HTTP `Server-Authorization` header
 as a response header using the exact same syntax as the `Authorization` request header field.
 
 The header is contructed using the same process as the client's request header. The server uses the same credentials and other
@@ -262,28 +262,28 @@ new values based on the server response. The rest as identical to those used by 
 The result MAC digest is included with the optional `hash` and `ext` values:
 
 ```
-Server-Authorization: Hawk mac="XIJRsMl/4oL+nn+vKoeVZPdCHXB4yJkNnBbTbHFZUYE=", hash="f9cDF/TDm7TkYRLnGwRMfeDzT6LixQVLvrIKhh0vgmM=", ext="response-specific"
+Server-Authorization: Abriva mac="XIJRsMl/4oL+nn+vKoeVZPdCHXB4yJkNnBbTbHFZUYE=", hash="f9cDF/TDm7TkYRLnGwRMfeDzT6LixQVLvrIKhh0vgmM=", ext="response-specific"
 ```
 
 
 ## Browser Support and Considerations
 
-A browser script is provided for including using a `<script>` tag in [lib/browser.js](/lib/browser.js). It's also a [component](http://component.io/hueniverse/hawk).
+A browser script is provided for including using a `<script>` tag in [lib/browser.js](/lib/browser.js). It's also a [component](http://component.io/hueniverse/abriva).
 
-**Hawk** relies on the _Server-Authorization_ and _WWW-Authenticate_ headers in its response to communicate with the client.
+**Abriva** relies on the _Server-Authorization_ and _WWW-Authenticate_ headers in its response to communicate with the client.
 Therefore, in case of CORS requests, it is important to consider sending _Access-Control-Expose-Headers_ with the value
 _"WWW-Authenticate, Server-Authorization"_ on each response from your server. As explained in the
 [specifications](http://www.w3.org/TR/cors/#access-control-expose-headers-response-header), it will indicate that these headers
 can safely be accessed by the client (using getResponseHeader() on the XmlHttpRequest object). Otherwise you will be met with a
 ["simple response header"](http://www.w3.org/TR/cors/#simple-response-header) which excludes these fields and would prevent the
-Hawk client from authenticating the requests.You can read more about the why and how in this
+Abriva client from authenticating the requests.You can read more about the why and how in this
 [article](http://www.html5rocks.com/en/tutorials/cors/#toc-adding-cors-support-to-the-server)
 
 
 # Single URI Authorization
 
 There are cases in which limited and short-term access to a protected resource is granted to a third party which does not
-have access to the shared credentials. For example, displaying a protected image on a web page accessed by anyone. **Hawk**
+have access to the shared credentials. For example, displaying a protected image on a web page accessed by anyone. **Abriva**
 provides limited support for such URIs in the form of a _bewit_ - a URI query parameter appended to the request URI which contains
 the necessary credentials to authenticate the request.
 
@@ -301,7 +301,7 @@ Server code:
 
 ```javascript
 var Http = require('http');
-var Hawk = require('hawk');
+var Abriva = require('abriva');
 
 
 // Credentials lookup function
@@ -320,7 +320,7 @@ var credentialsFunc = function (id, callback) {
 
 var handler = function (req, res) {
 
-    Hawk.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
+    Abriva.uri.authenticate(req, credentialsFunc, {}, function (err, credentials, attributes) {
 
         res.writeHead(!err ? 200 : 401, { 'Content-Type': 'text/plain' });
         res.end(!err ? 'Access granted' : 'Shoosh!');
@@ -334,7 +334,7 @@ Bewit code generation:
 
 ```javascript
 var Request = require('request');
-var Hawk = require('hawk');
+var Abriva = require('abriva');
 
 
 // Client credentials
@@ -348,7 +348,7 @@ var credentials = {
 // Generate bewit
 
 var duration = 60 * 5;      // 5 Minutes
-var bewit = Hawk.uri.getBewit('http://example.com:8080/resource/1?b=1&a=2', { credentials: credentials, ttlSec: duration, ext: 'some-app-data' });
+var bewit = Abriva.uri.getBewit('http://example.com:8080/resource/1?b=1&a=2', { credentials: credentials, ttlSec: duration, ext: 'some-app-data' });
 var uri = 'http://example.com:8000/resource/1?b=1&a=2' + '&bewit=' + bewit;
 ```
 
@@ -437,6 +437,6 @@ can create an exploit opportunity for cases where the nonce is similar in format
 
 # Acknowledgements
 
-**AbrivaID**  initial code borrowed heavily from [Hawk Authentication Scheme](https://github.com/hueniverse/hawk)
+**Abriva**  initial code borrowed heavily from [Abriva Authentication Scheme](https://github.com/hueniverse/abriva)
 including the actual code used to render the coverage report into HTML.
 
