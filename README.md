@@ -13,8 +13,17 @@ TBD
 partial cryptographic signature verification of the request and response, covering the HTTP method, request URI, host,
 and optionally the request payload.
 
+Two factor Authentication is made via mobile device. 
+The device generates an bitcoin-type wallet. this address of the wallet is sent to the server
+
+Authentication request appears under the forme of a QR code. 
+the user scans the QR and signs the message embedded in the wallet with the wallet private key.
+
+Signed message along with timestamp is sent to the server for authentication verification.
 
 
+# Protocol Specifications
+TBD
 
 
 ## Usage Example
@@ -31,7 +40,7 @@ var Abriva = require('abriva');
 var credentialsFunc = function (id, callback) {
 
     var credentials = {
-        key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
+        adr: '18ZXvspTuGR8ac4XF3EHGegy6df93vcVzK',
         algorithm: 'sha256',
         user: 'Steve'
     };
@@ -79,7 +88,6 @@ var Abriva = require('abriva');
 // Client credentials
 
 var credentials = {
-    id: 'dh37fgj492je',
     key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
     algorithm: 'sha256'
 }
