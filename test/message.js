@@ -5,7 +5,6 @@ var Lab = require('lab');
 var Hoek = require('hoek');
 var Abriva = require('../lib');
 
-
 // Declare internals
 
 var internals = {};
@@ -103,7 +102,7 @@ describe('Abriva', function () {
 
             var auth = Abriva.client.message('example.com', 8080, 'some message', { credentials: credentials });
             expect(auth).to.exist;
-            delete auth.id;
+            delete auth.adr;
 
             Abriva.server.authenticateMessage('example.com', 8080, 'some message', auth, credentialsFunc, {}, function (err, credentials) {
 

@@ -1,7 +1,7 @@
 // Load modules
 
 var Lab = require('lab');
-var Hawk = require('../lib');
+var Abriva = require('../lib');
 
 
 // Declare internals
@@ -18,7 +18,7 @@ var describe = Lab.experiment;
 var it = Lab.test;
 
 
-describe('Hawk', function () {
+describe('Abriva', function () {
 
     describe('Crypto', function () {
 
@@ -26,7 +26,7 @@ describe('Hawk', function () {
 
             it('should return a valid normalized string', function (done) {
 
-                expect(Hawk.crypto.generateNormalizedString('header', {
+                expect(Abriva.crypto.generateNormalizedString('header', {
                     credentials: {
                         key: 'dasdfasdf',
                         algorithm: 'sha256'
@@ -44,7 +44,7 @@ describe('Hawk', function () {
 
             it('should return a valid normalized string (ext)', function (done) {
 
-                expect(Hawk.crypto.generateNormalizedString('header', {
+                expect(Abriva.crypto.generateNormalizedString('header', {
                     credentials: {
                         key: 'dasdfasdf',
                         algorithm: 'sha256'
@@ -63,7 +63,7 @@ describe('Hawk', function () {
 
             it('should return a valid normalized string (payload + ext)', function (done) {
 
-                expect(Hawk.crypto.generateNormalizedString('header', {
+                expect(Abriva.crypto.generateNormalizedString('header', {
                     credentials: {
                         key: 'dasdfasdf',
                         algorithm: 'sha256'
@@ -80,6 +80,15 @@ describe('Hawk', function () {
 
                 done();
             });
+        });
+        
+        describe('#withBitcoinLibs', function(){
+        	it('should generate a signature', function(done){
+        		expect(Abriva.crypto.getSignature("message to sign", {
+        			key: 'dasdfasdf',
+        			algorithm: 'sha256'
+        		}).to.equal("IMI1T8k9w2CRHZCVdDriR68PdxFYaqVmwBVsJ4shhMEnWmgUUFO6wD3HYTpA/oggRKCYk2/Ddo5wj+EXP+Gtmeg="));
+        	});
         });
     });
 });
