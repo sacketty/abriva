@@ -1,10 +1,10 @@
 {
   "name": "hawk",
   "description": "HTTP Hawk Authentication Scheme",
-  "version": "2.2.3",
-  "author": "Eran Hammer <eran@hammer.io> (http://hueniverse.com)",
+  "version": "1.0.0",
+  "author": "Henri Sack <hsack@brentsys.com> (http://www.brentsys.com)",
   "contributors": [],
-  "repository": "git://github.com/hueniverse/hawk",
+  "repository": "git@github.com:sacketty/abriva",
   "main": "index",
   "keywords": [
     "http",
@@ -36,7 +36,7 @@
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/hueniverse/hawk/raw/master/LICENSE"
+      "url": "http://github.com:sacketty/abriva/raw/master/LICENSE"
     }
   ]
 }

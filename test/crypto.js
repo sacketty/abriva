@@ -87,7 +87,8 @@ describe('Abriva', function () {
         		expect(Abriva.crypto.getSignature("message to sign", {
         			key: 'dasdfasdf',
         			algorithm: 'sha256'
-        		}).to.equal("IMI1T8k9w2CRHZCVdDriR68PdxFYaqVmwBVsJ4shhMEnWmgUUFO6wD3HYTpA/oggRKCYk2/Ddo5wj+EXP+Gtmeg="));
+        		})).to.equal("IMI1T8k9w2CRHZCVdDriR68PdxFYaqVmwBVsJ4shhMEnWmgUUFO6wD3HYTpA/oggRKCYk2/Ddo5wj+EXP+Gtmeg=");
+        		done();
         	});
         });
     });
